@@ -1,6 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import { useLogin, useCsrfToken } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
+import { sidebarMenu } from "@/components/core/sideBar/sideBar";
 
 interface FormErrors {
   username?: string;
@@ -14,6 +16,7 @@ export default function LoginForm() {
 
   const { isLoading: isCsrfLoading } = useCsrfToken();
   const loginMutation = useLogin();
+  const router = useRouter();
 
   const validateForm = (): boolean => {
     const errors: FormErrors = {};
@@ -35,15 +38,18 @@ export default function LoginForm() {
   // 로그인 폼 제출 핸들러
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // 폼 유효성 검사
     if (!validateForm()) return;
-    
-    // 로그인 요청
-    loginMutation.mutate({
-      username: username.trim(),
-      password: password,
-    });
+    loginMutation.mutate(
+      {
+        username: username.trim(),
+        password: password,
+      },
+      {
+        onSuccess: () => {
+          router.push(sidebarMenu[0].path);
+        }
+      }
+    );
   };
 
   // 입력 필드 변경 시 해당 에러 초기화
@@ -63,14 +69,12 @@ export default function LoginForm() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-
       {/* 로그인 폼 */}
       <div className="flex items-center justify-center min-h-[calc(100vh-120px)]">
         <div className="bg-white rounded-lg shadow-md p-8 w-full max-w-md">
           <h1 className="text-xl font-medium text-gray-900 text-center mb-6">
             로그인
           </h1>
-          
           {/* 전역 에러 메시지 */}
           {loginMutation.error ? (
             <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-600 text-sm text-center">
@@ -79,7 +83,6 @@ export default function LoginForm() {
                 : '로그인에 실패했습니다. 사용자명과 비밀번호를 확인해주세요.'}
             </div>
           ) : null}
-
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-3">
               {/* 사용자명 입력 */}
@@ -105,7 +108,6 @@ export default function LoginForm() {
                   </span>
                 )}
               </div>
-
               {/* 비밀번호 입력 */}
               <div>
                 <input
@@ -129,7 +131,6 @@ export default function LoginForm() {
                   </span>
                 )}
               </div>
-
               {/* 로그인 버튼 */}
               <button
                 type="submit"
