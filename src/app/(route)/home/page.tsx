@@ -1,48 +1,17 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import AdminLayout from "@/components/layout/AdminLayout";
+import { callApi } from "@/utils/api";
+import { API_ENDPOINTS } from "@/config";
 
 export default function HomePage() {
   const [apiResult, setApiResult] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // 쿠키에서 CSRF 토큰을 가져오는 함수
-  const getCookieValue = (name: string): string | null => {
-    if (typeof document === 'undefined') return null;
-    
-    const cookies = document.cookie.split(';');
-    for (let cookie of cookies) {
-      const [cookieName, cookieValue] = cookie.split('=').map(c => c.trim());
-      if (cookieName === name) {
-        return decodeURIComponent(cookieValue);
-      }
-    }
-    return null;
-  };
-
   // API 호출 함수
   const callTest1Api = async () => {
     try {
-      const csrfToken = getCookieValue('XSRF-TOKEN');
-      
-      if (!csrfToken) {
-        throw new Error("CSRF 토큰을 찾을 수 없습니다.");
-      }
-
-      const response = await fetch("http://localhost:8080/office/admin/test1", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          'Content-Type': 'application/json',
-          'X-XSRF-TOKEN': csrfToken,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`API 호출 실패: ${response.status}`);
-      }
-
+      const response = await callApi("http://localhost:8080/office/admin/test1", "POST");
       const result = await response.text();
       setApiResult(result);
     } catch (err) {
@@ -53,15 +22,20 @@ export default function HomePage() {
     }
   };
 
+  const callLogoutApi = async () => {
+    try {
+      await callApi(API_ENDPOINTS.AUTH.LOGOUT, "POST");
+      window.location.href = "/";
+    } catch (err) {
+    }
+  };
+
   useEffect(() => {
     callTest1Api();
   }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* 헤더 */}
-      <AdminLayout>
-
       {/* 메인 콘텐츠 */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-lg shadow-md p-6">
@@ -123,7 +97,6 @@ export default function HomePage() {
           </div>
         </div>
       </div>
-      </AdminLayout>
     </div>
   );
 }

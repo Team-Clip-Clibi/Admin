@@ -5,7 +5,7 @@ import AdminHeader from "@/components/core/header/AdminHeader";
 type AdminLayoutProps = {
   children: React.ReactNode;
   userName?: string;
-  showLogout?: boolean; // 로그아웃 버튼 표시 여부
+  showLogout?: boolean;
 };
 
 export default function AdminLayout({ children, showLogout = true }: AdminLayoutProps) {
@@ -60,4 +60,4 @@ export default function AdminLayout({ children, showLogout = true }: AdminLayout
       {children}
     </div>
   );
-} 
+}

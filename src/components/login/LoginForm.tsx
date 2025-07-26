@@ -1,113 +1,68 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import AdminHeader from "@/components/layout/AdminHeader";
+import React, { useState } from "react";
+import { useLogin, useCsrfToken } from "@/hooks/useAuth";
+
+interface FormErrors {
+  username?: string;
+  password?: string;
+}
 
 export default function LoginForm() {
-  const [username, setUsername] = useState(""); // email -> username으로 변경
+  const [username, setUsername] = useState(""); 
   const [password, setPassword] = useState("");
-  const [csrfToken, setCsrfToken] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [formErrors, setFormErrors] = useState<FormErrors>({});
 
-  // 쿠키에서 값을 가져오는 함수
-  const getCookieValue = (name: string): string | null => {
-    if (typeof document === 'undefined') return null;
+  const { isLoading: isCsrfLoading } = useCsrfToken();
+  const loginMutation = useLogin();
+
+  const validateForm = (): boolean => {
+    const errors: FormErrors = {};
     
-    const cookies = document.cookie.split(';');
-    for (let cookie of cookies) {
-      const [cookieName, cookieValue] = cookie.split('=').map(c => c.trim());
-      if (cookieName === name) {
-        return decodeURIComponent(cookieValue);
-      }
+    if (!username.trim()) {
+      errors.username = "사용자명을 입력해주세요";
     }
-    return null;
+    
+    if (!password) {
+      errors.password = "비밀번호를 입력해주세요";
+    } else if (password.length < 4) {
+      errors.password = "비밀번호는 4자리 이상이어야 합니다";
+    }
+    
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
-  // 1. CSRF 토큰을 백엔드에서 받아오는 함수
-  useEffect(() => {
-    fetch("http://localhost:8080/login", { 
-      method: "GET",
-      credentials: "include" 
-    })
-      .then(async (res) => {
-        // 응답 후 쿠키에서 CSRF 토큰 추출
-        const token = getCookieValue('XSRF-TOKEN');
-        if (token) {
-          setCsrfToken(token);
-        } else {
-          throw new Error("CSRF 토큰을 찾을 수 없습니다.");
-        }
-      })
-      .catch((err) => {
-        console.error("CSRF 토큰 요청 오류:", err);
-      });
-  }, []);
-
-  // 2. 로그인 폼 제출 핸들러 (Spring Security 기본 폼 로그인 방식)
+  // 로그인 폼 제출 핸들러
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
+    
+    // 폼 유효성 검사
+    if (!validateForm()) return;
+    
+    // 로그인 요청
+    loginMutation.mutate({
+      username: username.trim(),
+      password: password,
+    });
+  };
 
-    if (!csrfToken) {
-      setError("CSRF 토큰이 없습니다.");
-      return;
-    }
-
-    try {
-      // FormData를 사용하여 Spring Security 기본 폼 로그인 형식으로 전송
-      const formData = new FormData();
-      formData.append('username', username);
-      formData.append('password', password);
-      formData.append('_csrf', csrfToken);
-
-      const res = await fetch("http://localhost:8080/login", {
-        method: "POST",
-        credentials: "include", // 세션 쿠키 포함
-        headers: {
-          'X-XSRF-TOKEN': csrfToken, // 헤더에 CSRF 토큰 포함
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: formData // JSON이 아닌 FormData 사용
-      });
-
-      if (res.ok) {
-        // 로그인 성공 시 홈 화면으로 리다이렉트
-        window.location.href = "/home";
-      } else {
-        throw new Error("로그인 실패");
-      }
-    } catch (err) {
-      console.error("로그인 오류:", err);
-      setError("로그인에 실패했습니다. 사용자명과 비밀번호를 확인해주세요.");
+  // 입력 필드 변경 시 해당 에러 초기화
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUsername(e.target.value);
+    if (formErrors.username) {
+      setFormErrors(prev => ({ ...prev, username: undefined }));
     }
   };
 
-  // 인증된 API 호출을 위한 헬퍼 함수
-  const callProtectedApi = async (url: string, method: string = 'GET', data: any = null) => {
-    const token = getCookieValue('XSRF-TOKEN');
-    
-    const options: RequestInit = {
-      method,
-      credentials: 'include',
-      headers: {
-        'X-XSRF-TOKEN': token || ''
-      }
-    };
-
-    if (data && method !== 'GET') {
-      options.headers = {
-        ...options.headers,
-        'Content-Type': 'application/json'
-      };
-      options.body = JSON.stringify(data);
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+    if (formErrors.password) {
+      setFormErrors(prev => ({ ...prev, password: undefined }));
     }
-
-    return await fetch(url, options);
   };
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* 헤더 */}
-      <AdminHeader />
 
       {/* 로그인 폼 */}
       <div className="flex items-center justify-center min-h-[calc(100vh-120px)]">
@@ -116,35 +71,72 @@ export default function LoginForm() {
             로그인
           </h1>
           
-          {error && (
+          {/* 전역 에러 메시지 */}
+          {loginMutation.error ? (
             <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-600 text-sm text-center">
-              {error}
+              {loginMutation.error instanceof Error 
+                ? loginMutation.error.message 
+                : '로그인에 실패했습니다. 사용자명과 비밀번호를 확인해주세요.'}
             </div>
-          )}
+          ) : null}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-3">
-              <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="사용자명 입력하기"
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-900 placeholder-gray-900"
-                required
-              />
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="비밀번호 입력하기"
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-900 placeholder-gray-900"
-                required
-              />
+              {/* 사용자명 입력 */}
+              <div>
+                <input
+                  type="text"
+                  value={username}
+                  onChange={handleUsernameChange}
+                  placeholder="사용자명 입력하기"
+                  aria-label="사용자명"
+                  aria-invalid={!!formErrors.username}
+                  aria-describedby={formErrors.username ? "username-error" : undefined}
+                  className={`w-full px-4 py-3 bg-gray-50 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-900 placeholder-gray-500 ${
+                    formErrors.username 
+                      ? 'border-red-300 focus:ring-red-500' 
+                      : 'border-gray-200'
+                  }`}
+                  required
+                />
+                {formErrors.username && (
+                  <span id="username-error" className="text-red-500 text-sm mt-1 block">
+                    {formErrors.username}
+                  </span>
+                )}
+              </div>
+
+              {/* 비밀번호 입력 */}
+              <div>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={handlePasswordChange}
+                  placeholder="비밀번호 입력하기"
+                  aria-label="비밀번호"
+                  aria-invalid={!!formErrors.password}
+                  aria-describedby={formErrors.password ? "password-error" : undefined}
+                  className={`w-full px-4 py-3 bg-gray-50 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-900 placeholder-gray-500 ${
+                    formErrors.password 
+                      ? 'border-red-300 focus:ring-red-500' 
+                      : 'border-gray-200'
+                  }`}
+                  required
+                />
+                {formErrors.password && (
+                  <span id="password-error" className="text-red-500 text-sm mt-1 block">
+                    {formErrors.password}
+                  </span>
+                )}
+              </div>
+
+              {/* 로그인 버튼 */}
               <button
                 type="submit"
+                disabled={loginMutation.isPending || isCsrfLoading}
                 className="w-full px-6 py-3 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
-                로그인
+                {loginMutation.isPending ? "로그인 중..." : "로그인"}
               </button>
             </div>
           </form>
