@@ -1,45 +1,24 @@
 "use client";
 import React from "react";
 import AdminHeader from "@/components/core/header/AdminHeader";
+import Sidebar from "@/components/core/sideBar/sideBar";
+import { callApi } from "@/utils/api";
+import { API_ENDPOINTS } from "@/config";
 
 type AdminLayoutProps = {
   children: React.ReactNode;
   userName?: string;
   showLogout?: boolean;
+  showSidebar?: boolean;
 };
 
-export default function AdminLayout({ children, showLogout = true }: AdminLayoutProps) {
-  // 공통 로그아웃 함수
+export default function AdminLayout({ children, showLogout = true, showSidebar = true }: AdminLayoutProps) {
+
   const callLogoutApi = async () => {
-    const getCookieValue = (name: string): string | null => {
-      if (typeof document === 'undefined') return null;
-      const cookies = document.cookie.split(';');
-      for (let cookie of cookies) {
-        const [cookieName, cookieValue] = cookie.split('=').map(c => c.trim());
-        if (cookieName === name) {
-          return decodeURIComponent(cookieValue);
-        }
-      }
-      return null;
-    };
-
     try {
-      const csrfToken = getCookieValue('XSRF-TOKEN');
-      if (!csrfToken) throw new Error("CSRF 토큰을 찾을 수 없습니다.");
-
-      const response = await fetch("http://localhost:8080/logout", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          'Content-Type': 'application/json',
-          'X-XSRF-TOKEN': csrfToken,
-        },
-      });
-
-      if (!response.ok) throw new Error(`API 호출 실패: ${response.status}`);
+      await callApi(API_ENDPOINTS.AUTH.LOGOUT, "POST");
       window.location.href = "/";
     } catch (err) {
-      // 에러 핸들링 (필요시)
     }
   };
 
@@ -57,7 +36,12 @@ export default function AdminLayout({ children, showLogout = true }: AdminLayout
           ) : undefined
         }
       />
-      {children}
+      <div className="flex">
+        {showSidebar && <Sidebar />}
+        <main className="flex-1 p-6">
+          {children}
+        </main>
+      </div>
     </div>
   );
 }
