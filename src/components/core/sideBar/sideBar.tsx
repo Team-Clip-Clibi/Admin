@@ -20,6 +20,8 @@ export default function Sidebar() {
   const router = useRouter();
 
   const handleMenuClick = (path: string) => {
+    window.localStorage.removeItem('informationActiveTab');
+    window.dispatchEvent(new Event("resetInformationTab"));
     router.push(path);
   };
 

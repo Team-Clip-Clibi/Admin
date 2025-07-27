@@ -29,7 +29,7 @@ export async function callApi(
     method,
     credentials: "include",
     headers,
-    redirect: "follow", // 리디렉트 자동 처리
+    redirect: "follow", 
   };
 
   if (data && method !== "GET") {

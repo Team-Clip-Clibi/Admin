@@ -1,0 +1,136 @@
+"use client";
+import React, { useState, useEffect } from "react";
+import LoginBannerTable from "./_components/LoginBannerTable";
+import HomeTopTable from "./_components/HomeTopTable";
+import HomeBottomTable from "./_components/HomeBottomTable";
+
+type TabType = 'login' | 'homeTop' | 'homeBottom' | null;
+
+export default function InformationView() {
+  const [activeTab, setActiveTab] = useState<TabType>(null);
+  const [initialized, setInitialized] = useState(false);
+
+  // 1. 마운트 시 localStorage에서 탭 상태 복원
+  useEffect(() => {
+    const savedTab = window.localStorage.getItem('informationActiveTab');
+    if (savedTab === 'login' || savedTab === 'homeTop' || savedTab === 'homeBottom') {
+      setActiveTab(savedTab);
+    }
+    setInitialized(true);
+  }, []);
+
+  // 2. 커스텀 이벤트로 카드화면 리셋
+  useEffect(() => {
+    const handleReset = () => {
+      setActiveTab(null);
+      window.localStorage.removeItem('informationActiveTab');
+    };
+    window.addEventListener("resetInformationTab", handleReset);
+    return () => window.removeEventListener("resetInformationTab", handleReset);
+  }, []);
+
+  // 3. 탭 클릭 시 localStorage에 저장
+  const handleTabClick = (tab: 'login' | 'homeTop' | 'homeBottom') => {
+    setActiveTab(tab);
+    window.localStorage.setItem('informationActiveTab', tab);
+    window.history.pushState({ tab }, '', window.location.pathname);
+  };
+
+  // 3. 뒤로가기(popstate) 시 카드화면으로
+  useEffect(() => {
+    const handlePopState = () => {
+      setActiveTab(null);
+      window.localStorage.removeItem('informationActiveTab');
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  if (!initialized) return null;
+
+
+  const handleAddInfo = () => {
+    // 정보 추가 로직 구현
+    console.log("정보 추가");
+  };
+
+  const getTabTitle = (tab: string) => {
+    switch (tab) {
+      case 'login': return '로그인 배너';
+      case 'homeTop': return '홈 상단';
+      case 'homeBottom': return '홈 하단 배너';
+      default: return '';
+    }
+  };
+
+  const renderTable = () => {
+    if (!activeTab) return null;
+    
+    switch (activeTab) {
+      case 'login':
+        return <LoginBannerTable />;
+      case 'homeTop':
+        return <HomeTopTable />;
+      case 'homeBottom':
+        return <HomeBottomTable />;
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="bg-white rounded-lg shadow-md p-6">
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">정보 관리</h1>
+      
+      {activeTab === null && (
+        <div className="space-y-6">
+          <div 
+            className="bg-purple-50 rounded-lg p-6 cursor-pointer hover:bg-purple-100 transition-colors"
+            onClick={() => handleTabClick('login')}
+          >
+            <h2 className="text-lg font-semibold text-purple-800 mb-4">로그인 배너</h2>
+            <p className="text-purple-600">로그인 배너를 관리합니다.</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div 
+              className="bg-blue-50 rounded-lg p-6 cursor-pointer hover:bg-blue-100 transition-colors"
+              onClick={() => handleTabClick('homeTop')}
+            >
+              <h3 className="text-lg font-semibold text-blue-800 mb-2">홈 상단 공지</h3>
+              <p className="text-blue-600">홈 상단 공지를 관리합니다.</p>
+            </div>
+            
+            <div 
+              className="bg-green-50 rounded-lg p-6 cursor-pointer hover:bg-green-100 transition-colors"
+              onClick={() => handleTabClick('homeBottom')}
+            >
+              <h3 className="text-lg font-semibold text-green-800 mb-2">홈 하단 배너</h3>
+              <p className="text-green-600">홈 하단 배너를 관리합니다.</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 탭이 선택된 경우 표 화면 */}
+      {activeTab !== null && (
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h2 className="text-lg font-semibold text-gray-800">{getTabTitle(activeTab)}</h2>
+            <button
+              onClick={handleAddInfo}
+              className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors"
+            >
+              + 정보 입력하기
+            </button>
+          </div>
+
+          {/* 배너 목록 테이블 - 스크롤 가능 */}
+          <div className="overflow-y-auto max-h-96 border border-gray-200 rounded-lg">
+            {renderTable()}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+} 
