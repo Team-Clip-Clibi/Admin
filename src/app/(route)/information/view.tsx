@@ -10,7 +10,6 @@ export default function InformationView() {
   const [activeTab, setActiveTab] = useState<TabType>(null);
   const [initialized, setInitialized] = useState(false);
 
-  // 1. 마운트 시 localStorage에서 탭 상태 복원
   useEffect(() => {
     const savedTab = window.localStorage.getItem('informationActiveTab');
     if (savedTab === 'login' || savedTab === 'homeTop' || savedTab === 'homeBottom') {
@@ -19,7 +18,6 @@ export default function InformationView() {
     setInitialized(true);
   }, []);
 
-  // 2. 커스텀 이벤트로 카드화면 리셋
   useEffect(() => {
     const handleReset = () => {
       setActiveTab(null);
@@ -29,14 +27,12 @@ export default function InformationView() {
     return () => window.removeEventListener("resetInformationTab", handleReset);
   }, []);
 
-  // 3. 탭 클릭 시 localStorage에 저장
   const handleTabClick = (tab: 'login' | 'homeTop' | 'homeBottom') => {
     setActiveTab(tab);
     window.localStorage.setItem('informationActiveTab', tab);
     window.history.pushState({ tab }, '', window.location.pathname);
   };
 
-  // 3. 뒤로가기(popstate) 시 카드화면으로
   useEffect(() => {
     const handlePopState = () => {
       setActiveTab(null);
@@ -47,12 +43,6 @@ export default function InformationView() {
   }, []);
 
   if (!initialized) return null;
-
-
-  const handleAddInfo = () => {
-    // 정보 추가 로직 구현
-    console.log("정보 추가");
-  };
 
   const getTabTitle = (tab: string) => {
     switch (tab) {
@@ -115,17 +105,6 @@ export default function InformationView() {
       {/* 탭이 선택된 경우 표 화면 */}
       {activeTab !== null && (
         <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h2 className="text-lg font-semibold text-gray-800">{getTabTitle(activeTab)}</h2>
-            <button
-              onClick={handleAddInfo}
-              className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors"
-            >
-              + 정보 입력하기
-            </button>
-          </div>
-
-          {/* 배너 목록 테이블 - 스크롤 가능 */}
           <div className="overflow-y-auto max-h-96 border border-gray-200 rounded-lg">
             {renderTable()}
           </div>

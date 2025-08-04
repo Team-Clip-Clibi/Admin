@@ -10,7 +10,7 @@ const API_ENDPOINTS = {
         LOGOUT: `${API_URL}/logout`,
     },
     INFORMATION: {
-        IMAGE_UPLOAD: `${PREFIX.BANNER}/upload-url`,
+        UPLOAD_URL: `${PREFIX.BANNER}/upload-url`,
         LOGIN_BANNER: `${PREFIX.BANNER}/login`,
         HOME_BANNER: `${PREFIX.BANNER}/home`,
         NOTICE: `${PREFIX.NOTICE}`,

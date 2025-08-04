@@ -1,4 +1,5 @@
 import React from "react";
+import OnethingLogo from "@/components/icons/OnethingLogo.svg";
 
 type AdminHeaderProps = {
   rightContent?: React.ReactNode;
@@ -10,11 +11,7 @@ export default function AdminHeader({ rightContent }: AdminHeaderProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           <div className="flex items-center space-x-3">
-          <img
-              src="/logo.svg"
-              alt="Onething Logo"
-              className="w-8 h-8"
-            />
+            <OnethingLogo />
             <span className="text-xl font-semibold text-gray-800">Onething</span>
           </div>
           {rightContent && (

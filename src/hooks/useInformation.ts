@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getHomeBannerInfo, getLoginBannerInfo, getNoticeInfo, deleteNotice, deleteHomeBanner, deleteLoginBanner } from '@/apis/information/information';
+import { getHomeBannerInfo, getLoginBannerInfo, getNoticeInfo, deleteNotice, deleteHomeBanner, deleteLoginBanner, createNotice, createHomeBanner, getUploadUrl, createLoginBanner } from '@/apis/information/information';
+import { HomeBannerInfoRequest, LoginBannerInfoRequest, NoticeInfoRequest } from '@/apis/information/informationType';
 
 export const INFORMATION_QUERY_KEYS = {
   LOGIN_BANNER: 'loginBanner',
@@ -107,3 +108,66 @@ export const useDeleteNotice = () => {
   });
 };
 
+export const useCreateNotice = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (noticeInfo: NoticeInfoRequest) => {
+      await createNotice(noticeInfo);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [INFORMATION_QUERY_KEYS.NOTICE],
+      });
+    },
+    onError: (error) => {
+      console.error('공지 생성 실패:', error);
+    },
+  });
+};
+
+export const useGetUploadUrl = () => {
+  return useMutation({
+    mutationFn: async () => {
+      const res = await getUploadUrl();
+      return res;
+    },
+  });
+};
+
+export const useCreateHomeBanner = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (homeBannerInfoRequest: HomeBannerInfoRequest) => {
+      await createHomeBanner(homeBannerInfoRequest);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [INFORMATION_QUERY_KEYS.HOME_BANNER],
+      });
+    },
+    onError: (error) => {
+      console.error('홈 배너 생성 실패:', error);
+    },
+  });
+};
+
+
+export const useCreateLoginBanner = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (loginBannerInfoRequest: LoginBannerInfoRequest) => {
+      await createLoginBanner(loginBannerInfoRequest);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [INFORMATION_QUERY_KEYS.LOGIN_BANNER],
+      });
+    },
+    onError: (error) => {
+      console.error('로그인 배너 생성 실패:', error);
+    },
+  });
+};

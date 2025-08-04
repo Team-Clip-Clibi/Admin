@@ -5,23 +5,22 @@
  */
 export const formatLocalDateTime = (dateTimeString: string): string => {
   try {
-    const date = new Date(dateTimeString);
+    const date = new Date(dateTimeString + 'Z');
     
-    // 유효하지 않은 날짜인 경우
     if (isNaN(date.getTime())) {
-      return dateTimeString; // 원본 반환
+      return dateTimeString; 
     }
 
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    const hours = String(date.getUTCHours()).padStart(2, '0');
+    const minutes = String(date.getUTCMinutes()).padStart(2, '0');
 
     return `${year}.${month}.${day} ${hours}:${minutes}`;
   } catch (error) {
     console.error('날짜 변환 실패:', error);
-    return dateTimeString; // 에러 시 원본 반환
+    return dateTimeString; 
   }
 };
 
@@ -72,7 +71,7 @@ export const formatDateTime = (
   format: 'full' | 'date' | 'time' | 'relative' = 'full'
 ): string => {
   try {
-    const date = new Date(dateTimeString);
+    const date = new Date(dateTimeString + 'Z');
     
     if (isNaN(date.getTime())) {
       return dateTimeString;
@@ -80,14 +79,14 @@ export const formatDateTime = (
 
     switch (format) {
       case 'date':
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
+        const year = date.getUTCFullYear();
+        const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+        const day = String(date.getUTCDate()).padStart(2, '0');
         return `${year}.${month}.${day}`;
       
       case 'time':
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const hours = String(date.getUTCHours()).padStart(2, '0');
+        const minutes = String(date.getUTCMinutes()).padStart(2, '0');
         return `${hours}:${minutes}`;
       
       case 'relative':
@@ -99,6 +98,61 @@ export const formatDateTime = (
     }
   } catch (error) {
     console.error('날짜 포맷 변환 실패:', error);
+    return dateTimeString;
+  }
+};
+
+/**
+ * HTML date input의 값을 LocalDateTime 형식으로 변환
+ * @param dateString - "2025-01-15" 형식의 문자열
+ * @returns "2025-01-15T00:00:00" 형식의 문자열
+ */
+export const formatDateToLocalDateTime = (dateString: string): string => {
+  if (!dateString) return '';
+  
+  try {
+    // date input의 값은 로컬 시간대로 처리
+    const date = new Date(dateString);
+    
+    if (isNaN(date.getTime())) {
+      return dateString;
+    }
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    
+    return `${year}-${month}-${day}T00:00:00`;
+  } catch (error) {
+    console.error('날짜 변환 실패:', error);
+    return dateString;
+  }
+};
+
+/**
+ * HTML datetime-local input의 값을 LocalDateTime 형식으로 변환
+ * @param dateTimeString - "2025-01-15T14:30" 형식의 문자열
+ * @returns "2025-01-15T14:30:00" 형식의 문자열
+ */
+export const formatDateTimeToLocalDateTime = (dateTimeString: string): string => {
+  if (!dateTimeString) return '';
+  
+  try {
+    const date = new Date(dateTimeString);
+    
+    if (isNaN(date.getTime())) {
+      return dateTimeString;
+    }
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    
+    return `${year}-${month}-${day}T${hours}:${minutes}:00`;
+  } catch (error) {
+    console.error('날짜시간 변환 실패:', error);
     return dateTimeString;
   }
 }; 
