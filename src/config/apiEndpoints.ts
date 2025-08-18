@@ -3,6 +3,8 @@ const API_URL = 'http://localhost:8080';
 const PREFIX = {
     BANNER: `${API_URL}/banners`,
     NOTICE: `${API_URL}/notices`,
+    MATCHING: `${API_URL}/matchings`,
+    QUESTION: `${API_URL}/question-sheets`,
 }
 const API_ENDPOINTS = {
     AUTH: {
@@ -18,6 +20,16 @@ const API_ENDPOINTS = {
         DELETE_HOME_BANNER: (id: number) => `${PREFIX.BANNER}/home/${id}`,
         DELETE_NOTICE: (id: number) => `${PREFIX.NOTICE}/${id}`,
     },
+    MEETING: {
+        ONE_THING: `${PREFIX.MATCHING}/onethings`,
+        RANDOM: `${PREFIX.MATCHING}/randoms`,
+        ONE_THING_LIST: `${PREFIX.MATCHING}/onethings`,
+    },
+    QUESTION: {
+        QUESTION: `${PREFIX.QUESTION}`,
+        ONE_THING: `${PREFIX.QUESTION}/onethings`,
+        RANDOM: `${PREFIX.QUESTION}/randoms`,
+    }
 }
 
 export default API_ENDPOINTS;
