@@ -6,7 +6,7 @@ export interface ApiOptions {
 
 export async function callApi(
   url: string,
-  method: "GET" | "POST" | "PUT" | "DELETE" = "GET",
+  method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH" = "GET",
   data?: any,
   options: ApiOptions = {}
 ) {

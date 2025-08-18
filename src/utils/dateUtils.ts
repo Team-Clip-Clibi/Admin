@@ -155,4 +155,69 @@ export const formatDateTimeToLocalDateTime = (dateTimeString: string): string =>
     console.error('날짜시간 변환 실패:', error);
     return dateTimeString;
   }
+};
+
+/**
+ * 현재 날짜를 YYYY-MM-DD 형식으로 반환 (HTML date input용)
+ * @returns "2025-01-15" 형식의 문자열
+ */
+export const getCurrentDate = (): string => {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+/**
+ * YYYY-MM-DD 형식의 날짜를 YYYY.MM.DD 형식으로 변환 (화면 표시용)
+ * @param dateString - "2025-01-15" 형식의 문자열
+ * @returns "2025.01.15" 형식의 문자열
+ */
+export const formatDateForDisplay = (dateString: string): string => {
+  if (!dateString) return '';
+  
+  try {
+    // YYYY-MM-DD 형식을 YYYY.MM.DD로 변환
+    return dateString.replace(/-/g, '.');
+  } catch (error) {
+    console.error('날짜 표시 형식 변환 실패:', error);
+    return dateString;
+  }
+};
+
+/**
+ * YYYY-MM-DD 형식의 날짜를 LocalDate 형식으로 변환 (서버 전송용)
+ * @param dateString - "2025-01-15" 형식의 문자열
+ * @returns "2025-01-15" 형식의 문자열 (LocalDate는 동일한 형식)
+ */
+export const formatDateForServer = (dateString: string): string => {
+  if (!dateString) return '';
+  
+  try {
+    const date = new Date(dateString);
+    
+    if (isNaN(date.getTime())) {
+      return dateString;
+    }
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    
+    return `${year}-${month}-${day}`;
+  } catch (error) {
+    console.error('서버용 날짜 변환 실패:', error);
+    return dateString;
+  }
 }; 
+
+export const getCurrentDateTime = (): string => {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  const hours = String(today.getHours()).padStart(2, '0');
+  const minutes = String(today.getMinutes()).padStart(2, '0');
+  return `${year}-${month}-${day}T${hours}:${minutes}:00`;
+};

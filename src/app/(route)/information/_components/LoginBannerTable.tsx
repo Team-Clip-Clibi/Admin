@@ -164,7 +164,7 @@ export default function LoginBannerTable() {
       {/* 로그인 배너 등록 모달 */}
       {showAddModal && (
         <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50" onClick={handleBackgroundClick}>
-          <div className="bg-white p-8 rounded-lg w-[700px] max-h-[90vh] overflow-y-auto shadow-2xl relative">
+          <div className="bg-white p-8 rounded-lg w-full max-w-6xl max-h-[95vh] overflow-y-auto shadow-2xl relative">
             {/* X 버튼 */}
             <button
               onClick={handleCloseModal}

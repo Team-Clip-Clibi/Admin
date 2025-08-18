@@ -1,10 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import LoginBannerTable from "./_components/LoginBannerTable";
-import HomeTopTable from "./_components/HomeTopTable";
-import HomeBottomTable from "./_components/HomeBottomTable";
+import OneThingTable from "./_components/OneThingTable";
+import RandomTable from "./_components/RandomTable";
+import QuestionTable from "./_components/QuestionTable";
 
-type TabType = 'login' | 'homeTop' | 'homeBottom' | null;
+type TabType = 'oneThing' | 'random' | 'question' | null;
 
 export default function InformationView() {
   const [activeTab, setActiveTab] = useState<TabType>(null);
@@ -12,7 +12,7 @@ export default function InformationView() {
 
   useEffect(() => {
     const savedTab = window.localStorage.getItem('informationActiveTab');
-    if (savedTab === 'login' || savedTab === 'homeTop' || savedTab === 'homeBottom') {
+    if (savedTab === 'oneThing' || savedTab === 'random' || savedTab === 'question') {
       setActiveTab(savedTab);
     }
     setInitialized(true);
@@ -27,7 +27,7 @@ export default function InformationView() {
     return () => window.removeEventListener("resetInformationTab", handleReset);
   }, []);
 
-  const handleTabClick = (tab: 'login' | 'homeTop' | 'homeBottom') => {
+  const handleTabClick = (tab: 'oneThing' | 'random' | 'question') => {
     setActiveTab(tab);
     window.localStorage.setItem('informationActiveTab', tab);
     window.history.pushState({ tab }, '', window.location.pathname);
@@ -57,12 +57,12 @@ export default function InformationView() {
     if (!activeTab) return null;
     
     switch (activeTab) {
-      case 'login':
-        return <LoginBannerTable />;
-      case 'homeTop':
-        return <HomeTopTable />;
-      case 'homeBottom':
-        return <HomeBottomTable />;
+      case 'oneThing':
+        return <OneThingTable />;
+      case 'random':
+        return <RandomTable />;
+      case 'question':
+        return <QuestionTable />;
       default:
         return null;
     }
@@ -76,27 +76,27 @@ export default function InformationView() {
         <div className="space-y-6">
           <div 
             className="bg-purple-50 rounded-lg p-6 cursor-pointer hover:bg-purple-100 transition-colors"
-            onClick={() => handleTabClick('login')}
+            onClick={() => handleTabClick('oneThing')}
           >
-            <h2 className="text-lg font-semibold text-purple-800 mb-4">로그인 배너</h2>
-            <p className="text-purple-600">로그인 배너를 관리합니다.</p>
+            <h2 className="text-lg font-semibold text-purple-800 mb-4">원띵 모임</h2>
+            <p className="text-purple-600">원띵 모임을 관리합니다.</p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div 
               className="bg-blue-50 rounded-lg p-6 cursor-pointer hover:bg-blue-100 transition-colors"
-              onClick={() => handleTabClick('homeTop')}
+              onClick={() => handleTabClick('random')}
             >
-              <h3 className="text-lg font-semibold text-blue-800 mb-2">홈 상단 공지</h3>
-              <p className="text-blue-600">홈 상단 공지를 관리합니다.</p>
+              <h3 className="text-lg font-semibold text-blue-800 mb-2">랜덤 모임</h3>
+              <p className="text-blue-600">랜덤 모임을 관리합니다.</p>
             </div>
             
             <div 
               className="bg-green-50 rounded-lg p-6 cursor-pointer hover:bg-green-100 transition-colors"
-              onClick={() => handleTabClick('homeBottom')}
+              onClick={() => handleTabClick('question')}
             >
-              <h3 className="text-lg font-semibold text-green-800 mb-2">홈 하단 배너</h3>
-              <p className="text-green-600">홈 하단 배너를 관리합니다.</p>
+              <h3 className="text-lg font-semibold text-green-800 mb-2">질문지</h3>
+              <p className="text-green-600">질문지를 관리합니다.</p>
             </div>
           </div>
         </div>
@@ -104,9 +104,9 @@ export default function InformationView() {
 
       {/* 탭이 선택된 경우 표 화면 */}
       {activeTab !== null && (
-          <div className="h-[calc(100vh-200px)] overflow-y-auto border border-gray-200 rounded-lg">
-            {renderTable()}
-          </div>
+        <div className="h-[calc(100vh-200px)] overflow-y-auto border border-gray-200 rounded-lg">
+          {renderTable()}
+        </div>
       )}
     </div>
   );
