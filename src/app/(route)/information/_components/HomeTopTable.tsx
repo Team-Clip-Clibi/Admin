@@ -155,7 +155,7 @@ export default function HomeTopTable() {
       {/* 홈 상단 공지 등록 모달 */}
       {showAddModal && (
         <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50" onClick={handleBackgroundClick}>
-          <div className="bg-white p-8 rounded-lg w-[700px] max-h-[90vh] overflow-y-auto shadow-2xl relative">
+          <div className="bg-white p-8 rounded-lg w-full max-w-6xl max-h-[95vh] overflow-y-auto shadow-2xl relative">
             <button
               onClick={handleCloseModal}
               className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"

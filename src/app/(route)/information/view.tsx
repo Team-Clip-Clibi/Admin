@@ -104,11 +104,9 @@ export default function InformationView() {
 
       {/* 탭이 선택된 경우 표 화면 */}
       {activeTab !== null && (
-        <div className="space-y-4">
-          <div className="overflow-y-auto max-h-96 border border-gray-200 rounded-lg">
+          <div className="h-[calc(100vh-200px)] overflow-y-auto border border-gray-200 rounded-lg">
             {renderTable()}
           </div>
-        </div>
       )}
     </div>
   );
