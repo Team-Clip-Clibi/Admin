@@ -134,7 +134,7 @@ export default function RandomTable() {
         <h2 className="text-lg font-bold text-gray-900 mb-4">랜덤 모임 등록 및 관리</h2>
         
         {/* 첫 번째 행 */}
-        <div className="grid grid-cols-3 gap-4 mb-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
           {/* 지역 선택 */}
           <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">지역</label>
@@ -208,7 +208,7 @@ export default function RandomTable() {
         </div>
 
         {/* 두 번째 행 */}
-        <div className="grid grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
           {/* 날짜 입력 */}
           <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">날짜</label>
@@ -354,7 +354,8 @@ export default function RandomTable() {
         )}
 
         {!isLoading && !error && (
-          <Pagination
+          <div className="mt-4">
+            <Pagination
             sliceUtils={{
               currentPage: sliceUtils.currentPage,
               pageSize: sliceUtils.pageSize,
@@ -382,6 +383,7 @@ export default function RandomTable() {
               }
             }}
           />
+          </div>
         )}
       </div>
     </div>

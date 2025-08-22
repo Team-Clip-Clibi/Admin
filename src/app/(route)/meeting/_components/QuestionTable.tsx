@@ -50,9 +50,9 @@ export default function QuestionTable() {
   };
 
   return (
-    <div className="p-6">
-      {/* 헤더 */}
-      <div className="flex justify-between items-center mb-6">
+    <div className="bg-white rounded-lg shadow-sm h-[600px] flex flex-col">
+      {/* 헤더 - 고정 높이 */}
+      <div className="flex-shrink-0 p-6 border-b border-gray-200">
         <h2 className="text-lg font-bold text-gray-900">질문지 생성</h2>
         <div className="flex items-center space-x-4">
           {/* 생성하기 버튼 */}
@@ -65,8 +65,8 @@ export default function QuestionTable() {
         </div>
       </div>
 
-      {/* 데이터 테이블 */}
-      <div className="bg-white rounded-lg shadow">
+      {/* 데이터 테이블 - 남은 공간 모두 사용 */}
+      <div className="flex-1 overflow-x-auto p-6">
         {/* 로딩 상태 */}
         {isLoading && (
           <div className="flex justify-center items-center py-8">
@@ -82,7 +82,7 @@ export default function QuestionTable() {
         )}
 
         {/* 테이블 - 항상 표시 */}
-        <table className="w-full border-collapse">
+        <table className="w-full border-collapse min-w-full">
           <thead>
             <tr className="bg-gray-50">
               <th className="border border-gray-200 px-4 py-3 text-left font-medium text-gray-700">No</th>

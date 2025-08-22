@@ -130,13 +130,13 @@ export default function OneThingTable() {
   };
 
   return (
-    <div className="p-6">
-      {/* 모임생성 폼 */}
-      <div className="mb-8">
+    <div className="bg-white rounded-lg shadow-sm h-[800px] flex flex-col">
+      {/* 모임생성 폼 - 고정 높이 */}
+      <div className="flex-shrink-0 p-6 border-b border-gray-200">
         <h2 className="text-lg font-bold text-gray-900 mb-4">원띵 모임 등록 및 관리</h2>
         
         {/* 첫 번째 행 */}
-        <div className="grid grid-cols-3 gap-4 mb-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
           {/* 지역 선택 */}
           <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">지역</label>
@@ -210,7 +210,7 @@ export default function OneThingTable() {
         </div>
 
         {/* 두 번째 행 */}
-        <div className="grid grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
           {/* 날짜 입력 */}
           <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">날짜</label>
@@ -284,8 +284,8 @@ export default function OneThingTable() {
         </div>
       </div>
 
-      {/* 데이터 테이블 */}
-      <div className="bg-white rounded-lg shadow">
+      {/* 테이블 섹션 - 남은 공간 모두 사용 */}
+      <div className="flex-1 overflow-x-auto p-6">
         {/* 로딩 상태 */}
         {isLoading && (
           <div className="flex justify-center items-center py-8">
@@ -323,7 +323,7 @@ export default function OneThingTable() {
             <tbody>
               {sliceUtils.content.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="border border-gray-200 px-4 py-8 text-center text-gray-500">
+                  <td colSpan={6} className="border border-gray-200 px-4 py-8 text-center text-gray-500">
                     데이터가 없습니다.
                   </td>
                 </tr>
@@ -355,8 +355,11 @@ export default function OneThingTable() {
             </tbody>
           </table>
         )}
+      </div>
 
-        {!isLoading && !error && (
+      {/* 페이징 처리 */}
+      {!isLoading && !error && sliceUtils.shouldShowPagination && (
+        <div className="border-t border-gray-200">
           <Pagination
             sliceUtils={{
               currentPage: sliceUtils.currentPage,
@@ -385,8 +388,8 @@ export default function OneThingTable() {
               }
             }}
           />
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

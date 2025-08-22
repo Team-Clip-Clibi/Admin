@@ -29,6 +29,11 @@ const API_ENDPOINTS = {
         QUESTION: `${PREFIX.QUESTION}`,
         ONE_THING: `${PREFIX.QUESTION}/onethings`,
         RANDOM: `${PREFIX.QUESTION}/randoms`,
+    },
+    APPLICATION: {
+        ASSIGNED: `${PREFIX.MATCHING}/onethings/participants/assigned`,
+        UNASSIGNED: `${PREFIX.MATCHING}/onethings/participants/unassigned`,
+        PARTICIPANT: `${PREFIX.MATCHING}/onethings/participants`,
     }
 }
 
