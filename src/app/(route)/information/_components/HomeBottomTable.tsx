@@ -113,18 +113,23 @@ export default function HomeBottomTable() {
   }
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold text-gray-800">홈 하단 배너</h2>
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
-        >
-          + 배너 등록
-        </button>
+    <div className="bg-white rounded-lg shadow-sm h-[600px] flex flex-col">
+      {/* 헤더 - 고정 높이 */}
+      <div className="flex-shrink-0 p-6 border-b border-gray-200">
+        <div className="flex justify-between items-center">
+          <h2 className="text-lg font-semibold text-gray-800">홈 하단 배너</h2>
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
+          >
+            + 배너 등록
+          </button>
+        </div>
       </div>
       
-      <table className="w-full border-collapse">
+      {/* 테이블 섹션 - 남은 공간 모두 사용 */}
+      <div className="flex-1 overflow-x-auto p-6">
+        <table className="w-full border-collapse">
         <thead>
           <tr className="bg-gray-50">
             <th className="border border-gray-200 px-4 py-3 text-left font-medium text-gray-700">No</th>
@@ -154,6 +159,7 @@ export default function HomeBottomTable() {
           ))}
         </tbody>
       </table>
+      </div>
       
       {/* 홈 하단 배너 등록 모달 */}
       {showAddModal && (

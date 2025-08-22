@@ -20,8 +20,15 @@ export default function Sidebar() {
   const router = useRouter();
 
   const handleMenuClick = (path: string) => {
+    // 모든 탭 상태 초기화
     window.localStorage.removeItem('informationActiveTab');
+    window.localStorage.removeItem('applicationActiveTab');
+    window.localStorage.removeItem('meetingActiveTab');
+    
+    // 모든 탭 초기화 이벤트 발생
     window.dispatchEvent(new Event("resetInformationTab"));
+    window.dispatchEvent(new Event("resetApplicationTab"));
+    window.dispatchEvent(new Event("resetMeetingTab"));
     router.push(path);
   };
 
