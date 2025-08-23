@@ -12,6 +12,8 @@ export default function RandomTable() {
     RandomDistrict.GANGNAM,
     "",
     "",
+    "",
+    "",
     ""
   ));
 
@@ -61,7 +63,9 @@ export default function RandomTable() {
       formData.randomDistrict,
       formData.restaurantName,
       formData.address,
-      formatDateTimeToLocalDateTime(formData.dateTime)
+      formatDateTimeToLocalDateTime(formData.dateTime),
+      formData.menu,
+      formData.cuisineType
     );
 
     createRandomMeetingMutation.mutateAsync(createRandomMeetingDto);
@@ -177,6 +181,20 @@ export default function RandomTable() {
               />
           </div>
 
+          {/* 메뉴 입력 */}
+          <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">메뉴</label>
+                <input
+                type="text"
+                name="menu"
+                value={formData.menu}
+                onChange={handleInputChange}
+                placeholder="메뉴"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-gray-700 [&::-webkit-datetime-edit]:text-gray-700 [&::-webkit-calendar-picker-indicator]:text-gray-700"
+              />
+          </div>
+        </div>
+
           {/* 유형 선택 */}
           {/* <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">유형</label>
@@ -234,6 +252,57 @@ export default function RandomTable() {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-gray-700 [&::-webkit-datetime-edit]:text-gray-700 [&::-webkit-calendar-picker-indicator]:text-gray-700"
               />
           </div>
+          
+          {/* 요리 타입 선택 */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">요리 타입</label>
+            <div className="flex space-x-2">
+              <button
+                type="button"
+                onClick={() => setFormData(prev => ({ ...prev, cuisineType: "양식" }))}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  formData.cuisineType === "양식"
+                    ? "bg-purple-600 text-white"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                }`}
+              >
+                양식
+              </button>
+              <button
+                type="button"
+                onClick={() => setFormData(prev => ({ ...prev, cuisineType: "중식" }))}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  formData.cuisineType === "중식"
+                    ? "bg-purple-600 text-white"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                }`}
+              >
+                중식
+              </button>
+              <button
+                type="button"
+                onClick={() => setFormData(prev => ({ ...prev, cuisineType: "일식" }))}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  formData.cuisineType === "일식"
+                    ? "bg-purple-600 text-white"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                }`}
+              >
+                일식
+              </button>
+              <button
+                type="button"
+                onClick={() => setFormData(prev => ({ ...prev, cuisineType: "한식" }))}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  formData.cuisineType === "한식"
+                    ? "bg-purple-600 text-white"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                }`}
+              >
+                한식
+              </button>
+            </div>
+          </div>
 
           {/* 식사유형 선택 */}
           {/* <div>
@@ -279,7 +348,6 @@ export default function RandomTable() {
             매칭 취소 처리
           </button>
         </div>
-      </div>
 
       {/* 데이터 테이블 */}
       <div className="bg-white rounded-lg shadow">

@@ -13,7 +13,9 @@ export class CreateOneThingDto {
     public onethingDistrict: OnethingDistrict,
     public restaurantName: string,
     public address: string,
-    public dateTime: string
+    public dateTime: string,
+    public menu: string,
+    public cuisineType: string
   ) {}
 }
 
@@ -22,7 +24,9 @@ export class CreateRandomMeetingDto {
     public randomDistrict: RandomDistrict,
     public restaurantName: string,
     public address: string,
-    public dateTime: string
+    public dateTime: string,
+    public menu: string,
+    public cuisineType: string
   ) {}
 }
 
