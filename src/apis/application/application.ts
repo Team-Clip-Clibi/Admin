@@ -42,7 +42,7 @@ export const assignParticipant = async (registerOnethingParticipantDto: Register
             return JSON.parse(responseText);
         }
         return;
-    } catch (error) {
+    } catch {
         return;
     }
 };
@@ -52,7 +52,7 @@ export const deleteParticipant = async (userOnethingMatchingId: number): Promise
     const response = await callApi(url, "DELETE");
 
     if (response.status === 204 || response.status === 200) {
-        return; 
+        return;
     }
 
     try {
@@ -61,7 +61,7 @@ export const deleteParticipant = async (userOnethingMatchingId: number): Promise
             return JSON.parse(responseText);
         }
         return;
-    } catch (error) {
+    } catch {
         return;
     }
 };

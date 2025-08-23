@@ -1,8 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import { useAssignedList, useDeleteParticipant } from "@/hooks/useApplication";
-import { AssignParticipantParams } from "@/apis/application/applicationType";
-import { formatLocalDateTime } from "@/utils/dateUtils";
+import { AssignParticipantParams, ParticipantInfoDto } from "@/apis/application/applicationType";
+
 import { X } from "lucide-react";
 import { useSlice } from "@/hooks/useSlice";
 import { Pagination } from "@/components/core/pagination/Pagination";
@@ -33,7 +33,7 @@ export default function ParticipantInfoModal({
     onethingMatchingId: onethingMatchingId
   };
 
-  const { data: assignedListResponse, isLoading, error, refetch } = useAssignedList(apiParams);
+  const { data: assignedListResponse, isLoading, error } = useAssignedList(apiParams);
   const sliceUtils = useSlice(assignedListResponse);
   const paginationState = sliceUtils.getPaginationState();
   const deleteParticipantMutation = useDeleteParticipant();
@@ -66,7 +66,7 @@ export default function ParticipantInfoModal({
         handleClose();
       }, 1500);
       
-    } catch (error) {
+    } catch {
       setErrorMessage("참가자 삭제에 실패했습니다.");
       setShowErrorPopup(true);
     } finally {
@@ -125,7 +125,7 @@ export default function ParticipantInfoModal({
                 </thead>
                 <tbody>
                   {sliceUtils.content && sliceUtils.content.length > 0 ? (
-                    sliceUtils.content.map((participant: any, index: number) => (
+                    sliceUtils.content.map((participant: ParticipantInfoDto, index: number) => (
                       <tr key={participant.userOnethingMatchingId} className="hover:bg-gray-50">
                         <td className="border border-gray-200 px-3 py-3 whitespace-nowrap text-sm text-gray-900">
                           {sliceUtils.getItemNumber(index)}
@@ -146,7 +146,7 @@ export default function ParticipantInfoModal({
                           {participant.language}
                         </td>
                         <td className="border border-gray-200 px-3 py-3 whitespace-nowrap text-sm text-gray-900">
-                          {participant.preferredDateList?.map((date: any) => 
+                          {participant.preferredDateList?.map((date) => 
                             `${date.date}`
                           ).join(" / ") || "-"}
                         </td>

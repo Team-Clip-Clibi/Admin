@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { getQuestionList, createOneThingQuestion, getOneThingMatchingQuestionList, getRandomMatchingQuestionList, createRandomQuestion, updateQuestion } from '@/apis/meeting/question';
 import { CreateQuestionDto, QuestionInfoDto, QuestionListParams, MatchingQuestionListParams } from '@/apis/meeting/questionType';
-import { MatchingType } from '@/apis/meeting/meetingType';
+
 
 // 질문지 리스트 조회
 export const useQuestionList = (params: QuestionListParams) => {

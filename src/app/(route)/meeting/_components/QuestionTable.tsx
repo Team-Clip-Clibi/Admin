@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { QuestionInfoDto, OnethingDistrict, getOneThingDistrictKorean} from "@/apis/meeting/questionType";
+import { QuestionInfoDto } from "@/apis/meeting/questionType";
 import { useQuestionList } from "@/hooks/useQuestion";
 import { useSlice } from "@/hooks/useSlice";
 import { Pagination } from "@/components/core/pagination/Pagination";
