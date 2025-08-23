@@ -44,14 +44,7 @@ export default function InformationView() {
 
   if (!initialized) return null;
 
-  const getTabTitle = (tab: string) => {
-    switch (tab) {
-      case 'login': return '로그인 배너';
-      case 'homeTop': return '홈 상단';
-      case 'homeBottom': return '홈 하단 배너';
-      default: return '';
-    }
-  };
+
 
   const renderTable = () => {
     if (!activeTab) return null;

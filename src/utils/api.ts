@@ -7,7 +7,7 @@ export interface ApiOptions {
 export async function callApi(
   url: string,
   method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH" = "GET",
-  data?: any,
+  data?: unknown,
   options: ApiOptions = {}
 ) {
   const csrfToken = getCookieValue("XSRF-TOKEN");

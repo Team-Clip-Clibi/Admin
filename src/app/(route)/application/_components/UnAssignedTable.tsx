@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useSlice } from "@/hooks/useSlice";
 import { Pagination } from "@/components/core/pagination/Pagination";
 import { useUnAssignedList } from "@/hooks/useApplication";
-import { ParticipantInfoDto, OnethingDistrict, OnethingKeyword, JobCategory, getOnethingKeywordKorean, getJobCategoryKorean, getOneThingTimeSlotKorean } from "@/apis/application/applicationType";
+import { ParticipantInfoDto, OnethingDistrict, getOnethingKeywordKorean, getJobCategoryKorean } from "@/apis/application/applicationType";
 import { getCurrentDate } from "@/utils/dateUtils";
 import MatchingModal from "./MatchingModal";
 

@@ -3,7 +3,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  experimental: { instrumentationHook: true },
+  output: 'export',
+  trailingSlash: true,
+  images: {
+    unoptimized: true
+  },
+
   webpack: (config: import('webpack').Configuration) => {
     config.module?.rules?.push({
       test: /\.node$/,

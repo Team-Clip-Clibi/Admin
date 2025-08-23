@@ -1,10 +1,10 @@
 "use client";
 import React, { useState } from "react";
-import { MatchingInfoDto, RandomDistrict, MatchingType, getRandomDistrictKorean, CreateRandomMeetingDto } from "@/apis/meeting/meetingType";
+import { MatchingInfoDto, RandomDistrict, getRandomDistrictKorean, CreateRandomMeetingDto } from "@/apis/meeting/meetingType";
 import { useCreateRandomMeeting, useRandomMeetingList, useDeleteRandom, useCancelRandom } from "@/hooks/useMatching";
 import { useSlice } from "@/hooks/useSlice";
 import { Pagination } from "@/components/core/pagination/Pagination";
-import { formatDateForDisplay, formatDateForServer, formatDateTimeToLocalDateTime } from "@/utils/dateUtils";
+import { formatDateForDisplay, formatDateTimeToLocalDateTime } from "@/utils/dateUtils";
 
 export default function RandomTable() {
 

@@ -296,8 +296,8 @@ export default function CreateQuestionModal({ isOpen, onClose }: CreateQuestionM
                                 }
                               } else {
                                 // 현재 타입의 모든 항목 선택
-                                const newSelectedMeetings = sliceUtils.content.map((item: any) => ({
-                                  id: item.matchingId || item.id,
+                                const newSelectedMeetings = sliceUtils.content.map((item) => ({
+                                  id: item.matchingId,
                                   restaurantName: item.restaurantName,
                                   address: item.address,
                                   dateTime: item.dateTime,
@@ -328,16 +328,16 @@ export default function CreateQuestionModal({ isOpen, onClose }: CreateQuestionM
                           </td>
                         </tr>
                       ) : (
-                        sliceUtils.content.map((item: any, index: number) => {
-                          const isSelected = currentTypeSelectedMeetings.find(m => m.id === (item.matchingId || item.id));
+                        sliceUtils.content.map((item, index: number) => {
+                          const isSelected = currentTypeSelectedMeetings.find(m => m.id === item.matchingId);
                           return (
-                            <tr key={item.matchingId || item.id} className="hover:bg-gray-50">
+                            <tr key={item.matchingId} className="hover:bg-gray-50">
                               <td className="border border-gray-200 px-4 py-3">
                                 <input
                                   type="checkbox"
                                   checked={isSelected ? true : false}
                                   onChange={() => handleMeetingSelect({
-                                    id: item.matchingId || item.id,
+                                    id: item.matchingId,
                                     restaurantName: item.restaurantName,
                                     address: item.address,
                                     dateTime: item.dateTime,

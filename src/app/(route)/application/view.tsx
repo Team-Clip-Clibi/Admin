@@ -44,14 +44,7 @@ export default function ApplicationView() {
 
   if (!initialized) return null;
 
-  const getTabTitle = (tab: string) => {
-    switch (tab) {
-      case 'assigned': return '매칭 현황';
-      case 'unassigned': return '신청 현황';
-      case 'review': return '리뷰 정보';
-      default: return '';
-    }
-  };
+
 
   const renderTable = () => {
     if (!activeTab) return null;

@@ -18,7 +18,7 @@ export default function AdminLayout({ children, showLogout = true, showSidebar =
     try {
       await callApi(API_ENDPOINTS.AUTH.LOGOUT, "POST");
       window.location.href = "/";
-    } catch (err) {
+    } catch {
     }
   };
 

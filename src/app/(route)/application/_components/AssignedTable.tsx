@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useSlice } from "@/hooks/useSlice";
 import { Pagination } from "@/components/core/pagination/Pagination";
 import { useOneThingList } from "@/hooks/useMatching";
-import { MatchingInfoDto, OnethingDistrict, getOneThingDistrictKorean } from "@/apis/meeting/meetingType";
+import { MatchingInfoDto, OnethingDistrict } from "@/apis/meeting/meetingType";
 import { getCurrentDate, formatLocalDateTime } from "@/utils/dateUtils";
 import ParticipantInfoModal from "./ParticipantInfoModal";
 
