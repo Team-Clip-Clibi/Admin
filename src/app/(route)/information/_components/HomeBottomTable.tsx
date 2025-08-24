@@ -113,52 +113,48 @@ export default function HomeBottomTable() {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm h-[600px] flex flex-col">
-      {/* 헤더 - 고정 높이 */}
-      <div className="flex-shrink-0 p-6 border-b border-gray-200">
-        <div className="flex justify-between items-center">
+    <div className="h-[600px] flex flex-col">
+      {/* 헤더 */}
+      <div className="flex-shrink-0 p-6">
+        <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold text-gray-800">홈 하단 배너</h2>
           <button
             onClick={() => setShowAddModal(true)}
-            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
           >
             + 배너 등록
           </button>
         </div>
       </div>
       
-      {/* 테이블 섹션 - 남은 공간 모두 사용 */}
+      {/* 테이블 */}
       <div className="flex-1 overflow-x-auto p-6">
-        <table className="w-full border-collapse">
-        <thead>
-          <tr className="bg-gray-50">
-            <th className="border border-gray-200 px-4 py-3 text-left font-medium text-gray-700">No</th>
-            <th className="border border-gray-200 px-4 py-3 text-left font-medium text-gray-700">노출희망날짜</th>
-            <th className="border border-gray-200 px-4 py-3 text-left font-medium text-gray-700">상태변경</th>
-          </tr>
-        </thead>
-        <tbody>
-          {bannerData.map((banner: BannerInfo, index: number) => (
-            <tr key={banner.no} className="hover:bg-gray-50">
-              <td className="border border-gray-200 px-4 py-3 text-gray-700">{index + 1}</td>
-              <td className="border border-gray-200 px-4 py-3 text-gray-700">{formatDateTime(banner.exposureDate)}</td>
-              <td className="border border-gray-200 px-4 py-3">
-                <button
-                  onClick={() => handleDelete(banner.no)}
-                  disabled={deleteMutation.isPending}
-                  className={`font-medium ${
-                    deleteMutation.isPending
-                      ? 'text-gray-400 cursor-not-allowed'
-                      : 'text-red-600 hover:text-red-800'
-                  }`}
-                >
-                  {deleteMutation.isPending ? '삭제 중...' : '삭제'}
-                </button>
-              </td>
+        <table className="w-full border border-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-3 py-3 text-left text-sm font-semibold text-gray-700 border border-gray-200">No</th>
+              <th className="px-3 py-3 text-left text-sm font-semibold text-gray-700 border border-gray-200">노출희망날짜</th>
+              <th className="px-3 py-3 text-left text-sm font-semibold text-gray-700 border border-gray-200">관리</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {bannerData.map((banner: BannerInfo, index: number) => (
+              <tr key={banner.no} className="border border-gray-200">
+                <td className="px-3 py-3 text-sm text-gray-900 border border-gray-200">{index + 1}</td>
+                <td className="px-3 py-3 text-sm text-gray-900 border border-gray-200">{formatDateTime(banner.exposureDate)}</td>
+                <td className="px-3 py-3 text-sm text-gray-900 border border-gray-200">
+                  <button
+                    onClick={() => handleDelete(banner.no)}
+                    disabled={deleteMutation.isPending}
+                    className="px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {deleteMutation.isPending ? '삭제 중...' : '삭제'}
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
       
       {/* 홈 하단 배너 등록 모달 */}
@@ -175,15 +171,15 @@ export default function HomeBottomTable() {
               </svg>
             </button>
             
-            <h3 className="text-xl font-semibold text-gray-700 mb-6 text-left">홈 배너</h3>
+            <h3 className="text-xl font-semibold text-gray-700 mb-6 text-left">홈 하단 배너</h3>
             
             {/* 이미지 업로드 영역 */}
             <div className="mb-6">
-                              <ImageUploader
-                  label="사진(원본, 크기 맞춰서 넣기)"
-                  value={imgFile}
-                  onChange={handleImageChange}
-                />
+              <ImageUploader
+                label="사진(원본, 크기 맞춰서 넣기)"
+                value={imgFile}
+                onChange={handleImageChange}
+              />
             </div>
 
             {/* 배너 정보 입력 영역 */}
@@ -201,7 +197,7 @@ export default function HomeBottomTable() {
                     value={formData.exposureDate}
                     onChange={handleInputChange}
                     min={new Date().toISOString().slice(0, 16)} 
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-700"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
                   />
                 </div>
               </div>
@@ -211,7 +207,7 @@ export default function HomeBottomTable() {
             <div className="flex justify-center">
               <button
                 onClick={handleSubmit}
-                className="bg-blue-400 text-white px-8 py-3 rounded-lg hover:bg-blue-300 transition-colors font-medium"
+                className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
               >
                 완료
               </button>
