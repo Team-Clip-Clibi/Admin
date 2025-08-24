@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { useCreateNotice } from "@/hooks/useInformation";
-import { NoticeInfo, getNoticeTypeKorean, NoticeType, NoticeInfoRequest } from "@/apis/information/informationType";
+import { getNoticeTypeKorean, NoticeType, NoticeInfoRequest } from "@/apis/information/informationType";
 import { formatDateTimeToLocalDateTime } from "@/utils/dateUtils";
 import { X } from "lucide-react";
 
