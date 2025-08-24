@@ -8,14 +8,12 @@ type TabType = 'assigned' | 'unassigned' | 'review' | null;
 
 export default function ApplicationView() {
   const [activeTab, setActiveTab] = useState<TabType>(null);
-  const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
     const savedTab = window.localStorage.getItem('applicationActiveTab');
     if (savedTab === 'assigned' || savedTab === 'unassigned' || savedTab === 'review') {
       setActiveTab(savedTab);
     }
-    setInitialized(true);
   }, []);
 
   useEffect(() => {
@@ -41,10 +39,6 @@ export default function ApplicationView() {
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
-
-  if (!initialized) return null;
-
-
 
   const renderTable = () => {
     if (!activeTab) return null;

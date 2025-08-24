@@ -8,14 +8,12 @@ type TabType = 'oneThing' | 'random' | 'question' | null;
 
 export default function InformationView() {
   const [activeTab, setActiveTab] = useState<TabType>(null);
-  const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
     const savedTab = window.localStorage.getItem('informationActiveTab');
     if (savedTab === 'oneThing' || savedTab === 'random' || savedTab === 'question') {
       setActiveTab(savedTab);
     }
-    setInitialized(true);
   }, []);
 
   useEffect(() => {
@@ -42,9 +40,6 @@ export default function InformationView() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  if (!initialized) return null;
-
-
 
   const renderTable = () => {
     if (!activeTab) return null;
@@ -63,7 +58,7 @@ export default function InformationView() {
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">정보 관리</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">모임 관리</h1>
       
       {activeTab === null && (
         <div className="space-y-6">

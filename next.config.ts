@@ -3,11 +3,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  output: 'export',
+  output: 'export', // 정적 파일 생성을 위해 활성화
   trailingSlash: true,
   images: {
     unoptimized: true
   },
+  // 정적 배포를 위한 추가 설정
+  distDir: 'out',
+  assetPrefix: '',
+  basePath: '',
 
   webpack: (config: import('webpack').Configuration) => {
     config.module?.rules?.push({

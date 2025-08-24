@@ -8,14 +8,12 @@ type TabType = 'login' | 'homeTop' | 'homeBottom' | null;
 
 export default function InformationView() {
   const [activeTab, setActiveTab] = useState<TabType>(null);
-  const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
     const savedTab = window.localStorage.getItem('informationActiveTab');
     if (savedTab === 'login' || savedTab === 'homeTop' || savedTab === 'homeBottom') {
       setActiveTab(savedTab);
     }
-    setInitialized(true);
   }, []);
 
   useEffect(() => {
@@ -41,9 +39,6 @@ export default function InformationView() {
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
-
-  if (!initialized) return null;
-
 
 
   const renderTable = () => {
