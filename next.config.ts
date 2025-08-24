@@ -3,7 +3,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  output: 'export', // 정적 파일 생성을 위해 활성화
+  // output: 'export', // Node.js 서버 배포를 위해 제거
   trailingSlash: true,
   images: {
     unoptimized: true
