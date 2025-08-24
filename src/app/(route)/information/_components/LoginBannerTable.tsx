@@ -177,6 +177,15 @@ export default function LoginBannerTable() {
             
             <h3 className="text-xl font-semibold text-gray-700 mb-6 text-left">로그인 배너</h3>
             
+            {/* 이미지 업로드 영역 */}
+            <div className="mb-6">
+              <ImageUploader
+                label="사진(원본, 크기 맞춰서 넣기)"
+                value={imgFile}
+                onChange={handleImageChange}
+              />
+            </div>
+
             {/* 내용 입력 영역 */}
             <div className="mb-6">
               <h4 className="text-lg font-medium text-gray-700 mb-4">배너 정보</h4>
