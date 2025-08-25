@@ -1,7 +1,10 @@
 "use client";
 import React, { useState } from "react";
-import { useCreateHomeBanner } from "@/hooks/useInformation";
+import { useCreateHomeBanner, useGetUploadUrl } from "@/hooks/useInformation";
 import { HomeBannerInfoRequest } from "@/apis/information/informationType";
+import ImageUploader from "@/components/imageUploader/ImageUploader";
+import { formatDateTimeToLocalDateTime } from "@/utils/dateUtils";
+import { uploadToS3 } from "@/utils/s3Upload";
 import { X } from "lucide-react";
 
 interface CreateHomeBottomBannerModalProps {
@@ -12,18 +15,25 @@ interface CreateHomeBottomBannerModalProps {
 
 export default function CreateHomeBottomBannerModal({ isOpen, onClose, onSuccess }: CreateHomeBottomBannerModalProps) {
   const createHomeBannerMutation = useCreateHomeBanner();
+  const getUploadUrlMutation = useGetUploadUrl();
   const [formData, setFormData] = useState(new HomeBannerInfoRequest("", ""));
+  const [imgFile, setImgFile] = useState<File>();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => new HomeBannerInfoRequest(
-      name === 'imgName' ? value : prev.imgName,
-      name === 'exposureDate' ? value : prev.exposureDate
+      prev.imgName,
+      name === 'exposureDate' ? formatDateTimeToLocalDateTime(value) : prev.exposureDate
     ));
+  };
+
+  const handleImageChange = (file: File | undefined) => {
+    setImgFile(file);
   };
 
   const handleCloseModal = () => {
     setFormData(new HomeBannerInfoRequest("", ""));
+    setImgFile(undefined);
     onClose();
   };
 
@@ -36,12 +46,31 @@ export default function CreateHomeBottomBannerModal({ isOpen, onClose, onSuccess
   const handleSubmit = async () => {
     try {
       // 유효성 검사
-      if (!formData.imgName.trim() || !formData.exposureDate) {
-        console.error('입력값이 올바르지 않습니다.');
+      if (!imgFile) {
+        console.error('이미지를 선택해주세요.');
+        return;
+      }
+      if (!formData.exposureDate) {
+        console.error('노출희망 날짜를 입력해주세요.');
         return;
       }
 
-      await createHomeBannerMutation.mutateAsync(formData);
+      // 1. 이미지 업로드 정보 가져오기
+      const imageUploadInfo = await getUploadUrlMutation.mutateAsync();
+      
+      // 2. S3에 이미지 업로드 
+      const uploadSuccess = await uploadToS3(imgFile, imageUploadInfo);
+      if (!uploadSuccess) {
+        throw new Error('S3 이미지 업로드에 실패했습니다.');
+      }
+      
+      // 3. 배너 정보 생성
+      const homeBannerInfoRequest = new HomeBannerInfoRequest(
+        imageUploadInfo.imgName, 
+        formData.exposureDate
+      );
+      await createHomeBannerMutation.mutateAsync(homeBannerInfoRequest);
+      
       handleCloseModal();
       onSuccess();
     } catch (error) {
@@ -63,28 +92,22 @@ export default function CreateHomeBottomBannerModal({ isOpen, onClose, onSuccess
         >
           <X className="w-6 h-6" />
         </button>
-        <h3 className="text-xl font-semibold text-gray-700 mb-6 text-left">홈 하단</h3>
+        <h3 className="text-xl font-semibold text-gray-700 mb-6 text-left">홈 하단 배너</h3>
         
-        {/* 내용 입력 영역 */}
+        {/* 이미지 업로드 영역 */}
         <div className="mb-6">
-          <h4 className="text-lg font-medium text-gray-700 mb-4 text-left">내용</h4>
+          <ImageUploader
+            label="사진(원본, 크기 맞춰서 넣기)"
+            value={imgFile}
+            onChange={handleImageChange}
+          />
+        </div>
+
+        {/* 배너 정보 입력 영역 */}
+        <div className="mb-6">
+          <h4 className="text-lg font-medium text-gray-700 mb-4">배너 정보</h4>
           
           <div className="space-y-4">
-            {/* 이미지명 입력 */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                이미지명
-              </label>
-              <input
-                type="text"
-                name="imgName"
-                value={formData.imgName}
-                onChange={handleInputChange}
-                placeholder="이미지명을 입력하세요"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
-              />
-            </div>
-            
             {/* 노출희망날짜 입력 */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">

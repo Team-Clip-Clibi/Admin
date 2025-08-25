@@ -1,20 +1,14 @@
 "use client";
 import React, { useState } from "react";
-import { useLoginBannerInfo, useDeleteLoginBanner, useGetUploadUrl, useCreateLoginBanner } from "@/hooks/useInformation";
-import { BannerInfo, LoginBannerInfoRequest } from "@/apis/information/informationType";
-import { formatDateTime, formatDateTimeToLocalDateTime } from "@/utils/dateUtils";
-import { X } from "lucide-react";
-import ImageUploader from "@/components/imageUploader/ImageUploader";
-import { uploadToS3 } from "@/utils/s3Upload";
+import { useLoginBannerInfo, useDeleteLoginBanner } from "@/hooks/useInformation";
+import { BannerInfo } from "@/apis/information/informationType";
+import { formatDateTime } from "@/utils/dateUtils";
+import CreateLoginBannerModal from "./CreateLoginBannerModal";
 
 export default function LoginBannerTable() {
   const { data: bannerData, isLoading, error, refetch } = useLoginBannerInfo();
   const deleteMutation = useDeleteLoginBanner();
   const [showAddModal, setShowAddModal] = useState(false);
-  const [formData, setFormData] = useState(new LoginBannerInfoRequest("", "", ""));
-  const [imgFile, setImgFile] = useState<File>();
-  const getUploadUrlMutation = useGetUploadUrl();
-  const createLoginBannerMutation = useCreateLoginBanner();
 
   const handleDelete = async (id: number) => {
     try {
@@ -25,60 +19,18 @@ export default function LoginBannerTable() {
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => new LoginBannerInfoRequest(
-      name === 'text' ? value : prev.text,
-      name === 'exposureDate' ? formatDateTimeToLocalDateTime(value) : prev.exposureDate,
-      prev.imgName
-    ));
-  };
-
-  const handleImageChange = (file: File | undefined) => {
-    setImgFile(file);
-  };
-
-  const handleSubmit = async () => {
-    try {
-      // 1. 이미지 업로드 정보 가져오기
-      const imageUploadInfo = await getUploadUrlMutation.mutateAsync();
-
-      // 2. S3에 이미지 업로드 
-      if (imgFile) {
-        const uploadSuccess = await uploadToS3(imgFile, imageUploadInfo);
-        if (!uploadSuccess) {
-          throw new Error('S3 이미지 업로드에 실패했습니다.');
-        }
-      }
-
-      // 3. 배너 정보 생성
-      const loginBannerInfoRequest = new LoginBannerInfoRequest(
-        formData.text,
-        formData.exposureDate,
-        imageUploadInfo.imgName
-      );
-
-      await createLoginBannerMutation.mutateAsync(loginBannerInfoRequest);
-      
-      setShowAddModal(false);
-      setFormData(new LoginBannerInfoRequest("", "", ""));
-      setImgFile(undefined);
-      await refetch();
-    } catch (error) {
-      console.error('등록 실패:', error);
-    }
-  };
-
-  const handleCloseModal = () => {
+  const handleModalClose = () => {
     setShowAddModal(false);
-    setFormData(new LoginBannerInfoRequest("", "", ""));
-    setImgFile(undefined);
   };
 
-  const handleBackgroundClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      handleCloseModal();
-    }
+  const handleModalSuccess = () => {
+    refetch();
+  };
+
+  const handleAddButtonClick = () => {
+    console.log('로그인 배너 등록 버튼 클릭됨');
+    setShowAddModal(true);
+    console.log('showAddModal 상태:', true);
   };
 
   if (isLoading) {
@@ -103,7 +55,7 @@ export default function LoginBannerTable() {
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold text-gray-800">로그인 배너</h2>
           <button
-            onClick={() => setShowAddModal(true)}
+            onClick={handleAddButtonClick}
             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
           >
             + 배너 등록
@@ -112,6 +64,13 @@ export default function LoginBannerTable() {
         <div className="text-center text-gray-500 py-8">
           등록된 배너가 없습니다.
         </div>
+        
+        {/* CreateLoginBannerModal 사용 */}
+        <CreateLoginBannerModal
+          isOpen={showAddModal}
+          onClose={handleModalClose}
+          onSuccess={handleModalSuccess}
+        />
       </div>
     );
   }
@@ -123,7 +82,7 @@ export default function LoginBannerTable() {
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold text-gray-800">로그인 배너</h2>
           <button
-            onClick={() => setShowAddModal(true)}
+            onClick={handleAddButtonClick}
             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
           >
             + 배너 등록
@@ -163,78 +122,12 @@ export default function LoginBannerTable() {
         </table>
       </div>
       
-      {/* 로그인 배너 등록 모달 */}
-      {showAddModal && (
-        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50" onClick={handleBackgroundClick}>
-          <div className="bg-white p-8 rounded-lg w-full max-w-6xl max-h-[95vh] overflow-y-auto shadow-2xl relative">
-            {/* X 버튼 */}
-            <button
-              onClick={handleCloseModal}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              <X className="w-6 h-6" />
-            </button>
-            
-            <h3 className="text-xl font-semibold text-gray-700 mb-6 text-left">로그인 배너</h3>
-            
-            {/* 이미지 업로드 영역 */}
-            <div className="mb-6">
-              <ImageUploader
-                label="사진(원본, 크기 맞춰서 넣기)"
-                value={imgFile}
-                onChange={handleImageChange}
-              />
-            </div>
-
-            {/* 내용 입력 영역 */}
-            <div className="mb-6">
-              <h4 className="text-lg font-medium text-gray-700 mb-4">배너 정보</h4>
-              
-              <div className="space-y-4">
-                {/* 텍스트 입력 */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    텍스트
-                  </label>
-                  <input
-                    type="text"
-                    name="text"
-                    value={formData.text}
-                    onChange={handleInputChange}
-                    placeholder="배너 텍스트를 입력하세요"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
-                  />
-                </div>
-                
-                {/* 노출희망날짜 입력 */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    노출희망 날짜 및 시간
-                  </label>
-                  <input
-                    type="datetime-local"
-                    name="exposureDate"
-                    value={formData.exposureDate}
-                    onChange={handleInputChange}
-                    min={new Date().toISOString().slice(0, 16)} 
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* 완료 버튼 */}
-            <div className="flex justify-center">
-              <button
-                onClick={handleSubmit}
-                className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
-              >
-                완료
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* CreateLoginBannerModal 사용 */}
+      <CreateLoginBannerModal
+        isOpen={showAddModal}
+        onClose={handleModalClose}
+        onSuccess={handleModalSuccess}
+      />
     </div>
   );
 } 
