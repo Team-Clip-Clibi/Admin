@@ -49,7 +49,12 @@ export default function HomeTopTable() {
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold text-gray-800">홈 상단 공지</h2>
           <button
-            onClick={() => setShowAddModal(true)}
+            onClick={() => {
+              console.log('공지 등록 버튼 클릭됨');
+              setShowAddModal(true)
+              console.log('showAddModal 상태:', true);
+            }
+            }
             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
           >
             + 공지 등록
